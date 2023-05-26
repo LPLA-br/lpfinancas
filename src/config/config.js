@@ -1,8 +1,10 @@
 const express = require('express');
 const path = require('path');
+const bodyParser = require('body-parser');
 
 const app = express();
 const PORTA = 8080;
+const dbcredenciais = { host:'127.0.0.1', user:'postgres' };
 
 //rotas apenas para GET
 //  const indexRouter = require('../routes/index');
@@ -11,12 +13,12 @@ const PORTA = 8080;
 app.use( express.json() );
 app.use( express.urlencoded({ extended: true }) );
 
+app.use(bodyParser.json());
+app.use( bodyParser.urlencoded({ extended: false}) );
+
 //usando as rotas GET
 //app.use('/', indexRouter);
 //app.use('/criarconta', criarcRouter);
-
-app.get( '/', (req,res,next)=>{ res.render( 'index', {} ) } );
-app.get( '/criarconta', (req,res,next)=>{ res.sendFile( path.join( __dirname, '../public/criarconta.html') ) } );
 
 //páginas html estáticas
 //app.use( express.static( path.join(__dirname, '../public') ) );
@@ -25,6 +27,4 @@ app.get( '/criarconta', (req,res,next)=>{ res.sendFile( path.join( __dirname, '.
 app.set('views', path.join(__dirname, '../views'));
 app.set('view engine', 'pug');
 
-
-
-module.exports = { app, PORTA };
+module.exports = { app, PORTA, dbcredenciais };
