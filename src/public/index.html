@@ -1,4 +1,5 @@
 <!DOCTYPE html>
+<!--página principal da aplicação. Única estática-->
 
 <html lang="pt-BR">
 	<head>
@@ -11,16 +12,13 @@
 	<body>
 		<header>
 			<h1> SISTEMA DE FINANÇAS BÁSICO </h1>
+			<p> SEJA BEM VINDO AO SISTEMA DE GERÊNCIA DE VALORES </p>
 		</header>
 
 		<main>
-			<form action="http://10.49.7.14:8080/inicio" method="post" >
-				<legend> LOGIN </legend>
-				<input type="text" placeholder="login" required >
-				<input type="password" placeholder="senha" required >
-				<input type="submit" value="entrar">
-			</form>
-			<a href="/criarconta"> criar conta </a>
+			<a href="/login"> loga-te se tens conta </a>
+			<br />
+			<a href="/criarconta"> criar conta se não a tens </a>
 		</main>
 
 		<footer>

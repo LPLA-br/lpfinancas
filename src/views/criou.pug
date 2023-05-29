@@ -1,16 +1,16 @@
 doctype html
 html( lang='en' )
 	head
-		title= aplicacao
+		title= criado
 		link( rel='stylesheet', href='../public/css/index.css', type='text/css' )
 	body
 		header
 			h1 LPFINANCAS
+			p #{ msg }
 		main
-			h2 seja bem vindo à aplicação de gerenciamento de valores monetários do luiz
-			a( href='/login' ) loga-te
-			br
-			a( href='/criarconta' ) cria conta
+			if sucesso
+				a( href='/login' ) loga-te
+			else
+				a( href='/criarconta' ) tente novamente
 		footer
 			small lpfinancas 2023
-	
