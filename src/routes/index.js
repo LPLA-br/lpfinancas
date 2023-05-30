@@ -92,16 +92,28 @@ router.post( '/login', (req,res,next)=>
 		{
 			res.sendStatus = 202;
 			console.log( 'POST ' + login + ' LOGADO !' );
-			res.render('sessao', { login });
+			res.redirect( `/sessao/${login}` );
 		}
 	});
 
 	postgres.end().then( ()=>{ console.log( 'FIM /LOGIN' ) } );
 });
 
-router.get('/sessao', (req,res,next)=>
+// --- aplicação ---
+
+router.get('/sessao/*', (req,res,next)=>
 {
 	res.render('sessao', {});
+});
+
+router.get( '/sessao/*/adicionarforasteiro', (req,res,next)=>
+{
+	res.render('sessao',{});
+});
+
+router.post( '/sessao/*/adicionarforasteiro', (req,res,next)=>
+{
+
 });
 
 module.exports = router;

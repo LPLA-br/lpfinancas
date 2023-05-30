@@ -1,0 +1,22 @@
+doctype html
+html( lang='en' )
+	head
+		title= sessao
+		link( rel='stylesheet', href='../public/css/index.css', type='text/css' )
+	body
+		header
+			h1 LPFINANCAS
+			p ADIÇÃO DE FORASTEIRO
+		main
+			form( action="http://127.0.0.1:8080/login" method="post" )
+				label( for="" ) login
+				input( id="id" type="text" name="login"  required )
+
+				label( for="id" ) senha
+				input( id="idsenha" type="password" name="senha"  required )
+
+				input( type="submit" value="LOGAR" )
+
+			a( href='/' ) encerrar sessao
+		footer
+			small lpfinancas 2023
