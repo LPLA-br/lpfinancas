@@ -1,0 +1,16 @@
+doctype html
+html( lang='en' )
+	head
+		title= criado
+		link( rel='stylesheet', href='../public/css/index.css', type='text/css' )
+	body
+		header
+			h1 LPFINANCAS
+			p #{ msg }
+		main
+			if sucesso
+				a( href='/login' ) loga-te
+			else
+				a( href='/criarconta' ) tente novamente
+		footer
+			small lpfinancas 2023

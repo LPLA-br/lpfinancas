@@ -1,0 +1,21 @@
+doctype html
+html( lang='en' )
+	head
+		title= criarconta
+		link( rel='stylesheet', href='../public/css/index.css', type='text/css' )
+	body
+		header
+			h1 LPFINANCAS
+			p CRIA TUA CONTA
+		main
+			form( action="http://127.0.0.1:8080/criarconta" method="post" )
+				label( for="idlogin" ) login
+				input( id="idlogin" type="text" name="login"  required )
+				label( for="idsenha" ) senha
+				input( id="idsenha" type="password" name="senha"  required )
+				input( type="submit" value="CRIAR" )
+
+			a( href='/' ) voltar para o inicio
+		footer
+			small lpfinancas 2023
+	
