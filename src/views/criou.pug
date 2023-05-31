@@ -1,16 +1,15 @@
 doctype html
-html( lang='en' )
-	head
-		title= criado
-		link( rel='stylesheet', href='../public/css/index.css', type='text/css' )
+html( lang='pt-br' )
+	include head.pug
 	body
 		header
 			h1 LPFINANCAS
-			p #{ msg }
 		main
+			div
+				h2 #{ msg }
+		footer
 			if sucesso
-				a( href='/login' ) loga-te
+				a( href='/login' ) agoraloga-te
 			else
 				a( href='/criarconta' ) tente novamente
-		footer
 			small lpfinancas 2023

@@ -7,7 +7,7 @@ const { dbcredenciais } = require( '../postgressql/credenciais' );
 
 router.get('/', (req, res, next)=>
 {
-	res.sendFile( path.join( __dirname, '../public/index.html' ) );
+	res.render( 'index', {} );
 });
 
 router.get( '/criarconta', (req,res,next)=>
@@ -92,7 +92,7 @@ router.post( '/login', (req,res,next)=>
 		{
 			res.sendStatus = 202;
 			console.log( 'POST ' + login + ' LOGADO !' );
-			res.redirect( `/sessao/${login}` );
+			res.redirect( `/sessao/usuario` );
 		}
 	});
 
@@ -101,14 +101,14 @@ router.post( '/login', (req,res,next)=>
 
 // --- aplicação ---
 
-router.get('/sessao/*', (req,res,next)=>
+router.get('/sessao/usuario', (req,res,next)=>
 {
-	res.render('sessao', {});
+	res.render('sessao', { login: 'Usuário' });
 });
 
-router.get( '/sessao/*/adicionarforasteiro', (req,res,next)=>
+router.get( '/sessao/usuario/adicionarforasteiro', (req,res,next)=>
 {
-	res.render('sessao',{});
+	res.render('adicionarforasteiro',{ ids: [ 1, 2, 3, 4, 5 ] });
 });
 
 router.post( '/sessao/*/adicionarforasteiro', (req,res,next)=>

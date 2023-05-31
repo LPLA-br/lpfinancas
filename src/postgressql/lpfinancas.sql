@@ -35,7 +35,8 @@ CREATE TABLE IF NOT EXISTS entradas
 	descr TEXT,
 	quantia FLOAT NOT NULL,
 	pagador INT REFERENCES forasteiros ( id ),
-	recebedor INT REFERENCES usuarios ( id )
+	recebedor INT REFERENCES usuarios ( id ),
+	carteira_alvo INT REFERENCES carteiras ( id )
 );
 
 CREATE TABLE IF NOT EXISTS saidas
@@ -44,10 +45,22 @@ CREATE TABLE IF NOT EXISTS saidas
 	descr TEXT,
 	quantia FLOAT NOT NULL,
 	recebedor INT REFERENCES usuarios ( id ),
-	pagador INT REFERENCES forasteiros ( id )
+	pagador INT REFERENCES forasteiros ( id ),
+	carteira_alvo INT REFERENCES carteiras ( id )
 );
 
-/* FUNÇÕES PARA ACESSO A INFORMAÇÕES */
+/* --ALTERAÇÕES NAS TABELAS 'LOG'-- */
+-- NOTA: após criação das tabelas iniciais acima.
+
+ALTER TABLE entradas
+ADD COLUMN IF NOT EXISTS 
+carteira_alvo INT REFERENCES carteiras( id );
+
+ALTER TABLE saidas
+ADD COLUMN IF NOT EXISTS
+carteira_alvo INT REFERENCES carteiras( id );
+
+/*################# FUNÇÕES ##################*/
 
 /* retorna um ou nenhum usuário do banco de dados. */
 CREATE OR REPLACE FUNCTION consulta_usuario( user_login VARCHAR(20), usuario_senha VARCHAR(50) )
@@ -66,8 +79,87 @@ RETURNS TABLE( login VARCHAR(20) ) AS $$
 $$
 LANGUAGE SQL;
 
-/*PROCEDIMENTOS PARA INSERÇÕES*/
+/*################# PROCEDIMENTOS ##################*/
 
-/*GATILHOS PARA MODIFICAÇÕES EM CADEIA*/
+CREATE OR REPLACE PROCEDURE criar_conta_usuario( login_inp VARCHAR(20), senha_inp VARCHAR(50) )
+AS $$
+BEGIN
+	IF senha_inp IS NULL THEN
+		RAISE EXCEPTION 'não pode haver usuários sem senha neste sistema !!!';
+	ELSE IF login_inp IS NULL THEN
+		RAISE EXCEPTION 'não pode haver usuários sem login neste sistema !!!';
+	END IF;
+
+	INSERT INTO usuarios( login, senha )
+	VALUES ( login_inp, senha_inp );
+END
+$$ LANGUAGE PLPGSQL;
+
+CREATE OR REPLACE PROCEDURE adicionar_carteira( unidade_monetaria_inp CHAR(3), motante_inp FLOAT, proprietario_inp INT )
+LANGUAGE SQL
+AS $$
+	INSERT INTO carteiras( unidade_monetaria, motante, proprietario )
+	VALUES( unidade_monetaria_inp, motante_inp, proprietario_inp );
+$$;
+
+
+CREATE OR REPLACE PROCEDURE adicionar_forasteiro( nome_inp VARCHAR(50), descr_inp TEXT, prop_registr INT )
+LANGUAGE SQL
+AS $$
+	INSERT INTO forasteiros( nome, descr, proprietario_registro )
+	VALUES ( nome_inp, descr_inp, prop_registr );
+$$;
+
+-------------------------------------------------------------------------------------------
+CREATE OR REPLACE PROCEDURE adicionar_entrada
+(
+	descr_inp TEXT,
+	quantia_inp FLOAT,
+	pagador_inp INT,
+	recebedor_inp INT,
+	cart_alvo_inp INT
+)
+LANGUAGE SQL
+AS $$
+	INSERT INTO entradas( descr, quantia, pagador, recebedor, carteira_alvo )
+	VALUES ( descr_inp, quantia_inp, pagador_inp, recebedor_inp, cart_alvo_inp );
+$$;
+
+CREATE OR REPLACE PROCEDURE adicionar_saida
+(
+	descr_inp TEXT,
+	quantia_inp FLOAT,
+	pagador_inp INT,
+	recebedor_inp INT,
+	cart_alvo_inp INT
+)
+LANGUAGE SQL
+AS $$
+	INSERT INTO saidas( descr, quantia, pagador, recebedor, carteira_alvo )
+	VALUES ( descr_inp, quantia_inp, pagador_inp, recebedor_inp, cart_alvo_inp );
+$$;
+-------------------------------------------------------------------------------------------
+
+/*################# GATILHOS ##################*/
+
+ /*updates ou inserts de entrada e de saida
+  corrigem o valor de uma
+  respectiva carteira*/
+
+CREATE OR REPLACE FUNCTION atualizar_valor_carteira()
+RETURNS trigger AS $atualizar_valor_carteira$
+BEGIN
+	UPDATE carteiras
+	SET motante = motante + NEW.quantia
+	WHERE id = NEW.carteira_alvo;
+END
+$atualizar_valor_carteira$ LANGUAGE PLPGSQL;
+
+CREATE OR REPLACE TRIGGER atualizar_entrada
+BEFORE INSERT OR UPDATE ON entradas
+EXECUTE FUNCTION atualizar_valor_carteira();
+
+
+/*################# VIEWS ##################*/
 
 
