@@ -3,7 +3,7 @@ const router = express.Router();
 //const session = require( 'express-session' );
 const path = require('path');
 
-const { dbcredenciais } = require( '../postgressql/credenciais' );
+const { dbcredenciais } = require( '../config/credenciais' );
 
 router.get('/', (req, res, next)=>
 {
