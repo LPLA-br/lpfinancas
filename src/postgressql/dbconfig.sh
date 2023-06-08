@@ -11,12 +11,16 @@ DADOSCOTEINERIS='/var/lib/postgresql/data/pgdata';
 
 if [[ $1 == "-l" ]]; then
 
+	echo "usuário local";
 	createuser -d -l -g -U $USUARIO ;
 	createdb -O $USUARIO $BANCODADOS ;
 	psql -U $USUARIO -d $BANCODADOS < $TABELAS ;
 	echo "configuração concluida. timestamp: $(date +%s)" ;
 
 elif [[ $1 == "-c" ]]; then
+
+	echo "deprecado: use docker compose up em ../../ymls/";
+	exit;
 
 	if [[  $(docker container ls -a | grep $HOSTNAMEDB | wc -l) == '1' ]]; then
 		echo 'pgdb existe! PULANDO' ;

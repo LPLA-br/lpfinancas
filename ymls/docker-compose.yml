@@ -1,0 +1,41 @@
+###############################
+#
+# VIII Junii MMXXIII
+# composição dos containers
+# lpfinancas
+#
+###############################
+
+version: "2.18.1"
+services:
+  pgdb:
+    image: postgres:latest
+    container_name: pgdb
+    volumes:
+      - lpfdata:/var/lib/postgresql/data
+    networks:
+      - lpfinancas
+    ports:
+      - 5432:5432
+    environment:
+      - POSTGRES_PASSWORD=mo69om
+      - PGDATA=/var/lib/postgresql/data
+  lpf:
+    image: lpla/lpfinancas:1.1
+    container_name: lpf
+    networks:
+      - lpfinancas
+    ports:
+      - 8080:8080
+    depends_on:
+      - pgdb
+
+networks:
+  lpfinancas:
+    driver:
+      bridge
+
+volumes:
+  lpfdata:
+    external: true
+    name: lpfdata
