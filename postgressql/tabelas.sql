@@ -1,8 +1,8 @@
 /*************************************
  * AUTOR: Luiz Paulo de Lima Araújo
- * DATA: 25 de Maio de 2022
+ * DATA INICIAL: 25 de Maio de 2022
  * PROJETO: lpfinancas
- *
+ * CATEGORIA: tabelas
  **************************************/
 
 CREATE TABLE IF NOT EXISTS usuarios
@@ -35,7 +35,8 @@ CREATE TABLE IF NOT EXISTS entradas
 	descr TEXT,
 	quantia FLOAT NOT NULL,
 	pagador INT REFERENCES forasteiros ( id ),
-	recebedor INT REFERENCES usuarios ( id )
+	recebedor INT REFERENCES usuarios ( id ),
+	carteira_alvo INT REFERENCES carteiras ( id )
 );
 
 CREATE TABLE IF NOT EXISTS saidas
@@ -44,30 +45,18 @@ CREATE TABLE IF NOT EXISTS saidas
 	descr TEXT,
 	quantia FLOAT NOT NULL,
 	recebedor INT REFERENCES usuarios ( id ),
-	pagador INT REFERENCES forasteiros ( id )
+	pagador INT REFERENCES forasteiros ( id ),
+	carteira_alvo INT REFERENCES carteiras ( id )
 );
 
-/* FUNÇÕES PARA ACESSO A INFORMAÇÕES */
+/* --ALTERAÇÕES NAS TABELAS 'LOG'-- */
+-- NOTA: após criação das tabelas iniciais acima.
 
-/* retorna um ou nenhum usuário do banco de dados. */
-CREATE OR REPLACE FUNCTION consulta_usuario( user_login VARCHAR(20), usuario_senha VARCHAR(50) )
-RETURNS TABLE( login VARCHAR(20), senha VARCHAR(50) ) AS $$
-	SELECT login, senha
-	FROM usuarios
-	WHERE login = user_login AND senha = usuario_senha;
-$$
-LANGUAGE SQL;
+ALTER TABLE entradas
+ADD COLUMN IF NOT EXISTS 
+carteira_alvo INT REFERENCES carteiras( id );
 
-CREATE OR REPLACE FUNCTION consulta_login_usuario( user_login VARCHAR(20) )
-RETURNS TABLE( login VARCHAR(20) ) AS $$
-	SELECT login
-	FROM usuarios
-	WHERE login = user_login;
-$$
-LANGUAGE SQL;
-
-/*PROCEDIMENTOS PARA INSERÇÕES*/
-
-/*GATILHOS PARA MODIFICAÇÕES EM CADEIA*/
-
+ALTER TABLE saidas
+ADD COLUMN IF NOT EXISTS
+carteira_alvo INT REFERENCES carteiras( id );
 

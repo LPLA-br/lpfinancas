@@ -1,0 +1,20 @@
+doctype html
+html( lang='pt-br' )
+	include head.pug
+	body
+		header
+			h1 LPFINANCAS
+			p FORASTEIROS DE #{ usuario }
+			p.
+				Informações sobre os forasteiros salvos por ti.
+		main
+			form( action=`http://127.0.0.1:8080/sessao/${usuario}/visualizarforasteiros` method="post" )
+				label( for="idnome" ) lista de forasteiros
+				p lista dinâmica de forasteiros select
+
+				input( type="submit" value="VISUALIZAR" )
+
+		footer
+			a( href=`/sessao/${usuario}` ) voltar para painel
+			a( href="/" ) encerrar sessao
+			small lpfinancas 2023
