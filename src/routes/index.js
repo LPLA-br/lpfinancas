@@ -3,7 +3,8 @@ const router = express.Router();
 //const session = require( 'express-session' );
 const path = require('path');
 
-const { dbcredenciais } = require( '../config/credenciais' );
+//const { dbcredenciais } = require( '../config/credenciais' );
+const { dbcredenciais } = require( '../config/credenciais_localdev' );
 
 router.get('/', (req, res, next)=>
 {
@@ -76,7 +77,6 @@ router.post( '/login', (req,res,next)=>
 
 	postgres.query( "SELECT consulta_usuario( $1::text, $2::text )", [ login, senha ], ( erro, resultado )=>
 	{
-		console.log( JSON.stringify(  resultado.rows  ));
 		if ( erro )
 		{
 			console.log( erro );
@@ -92,7 +92,7 @@ router.post( '/login', (req,res,next)=>
 		{
 			res.sendStatus = 202;
 			console.log( 'POST ' + login + ' LOGADO !' );
-			res.redirect( `/sessao/usuario` );
+			res.redirect( `/sessao/usuario/${login}/` );
 		}
 	});
 
@@ -101,19 +101,19 @@ router.post( '/login', (req,res,next)=>
 
 // --- aplicação ---
 
-router.get('/sessao/usuario', (req,res,next)=>
+router.get('/sessao/usuario/*/', (req,res,next)=>
 {
-	res.render('sessao', { login: 'Usuário' });
+	res.render('sessao', { login: req.query });
 });
 
-router.get( '/sessao/usuario/adicionarforasteiro', (req,res,next)=>
+router.get( '/sessao/usuario/*/adicionarforasteiro', (req,res,next)=>
 {
 	res.render('adicionarforasteiro',{ ids: [ 1, 2, 3, 4, 5 ] });
 });
 
-router.post( '/sessao/*/adicionarforasteiro', (req,res,next)=>
+router.post( '/sessao/*/visualizarforasteiro', (req,res,next)=>
 {
-
+	res.send('<h1> Em progresso ... </h1>');
 });
 
 module.exports = router;
