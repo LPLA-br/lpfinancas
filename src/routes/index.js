@@ -2,6 +2,7 @@ const express = require('express');
 const router = express.Router();
 //const session = require( 'express-session' );
 const path = require('path');
+const { Pool } = require('pg');
 
 //const { dbcredenciais } = require( '../config/credenciais' );
 const { dbcredenciais } = require( '../config/credenciais_localdev' );
@@ -21,7 +22,6 @@ router.post( '/criarconta', (req,res,next)=>
 	const login = req.body.login;
 	const senha = req.body.senha;
 
-	const { Pool } = require('pg');
 	const postgres = new Pool( dbcredenciais );
 
 	//usuário já existe ?
@@ -36,20 +36,20 @@ router.post( '/criarconta', (req,res,next)=>
 			//criar nova conta
 			const sub = new Pool( dbcredenciais );
 
-			sub.query( 'INSERT INTO usuarios(login,senha) VALUES ($1,$2)', [login,senha] )
+			sub.query( 'insert into usuarios(login,senha) values ($1,$2)', [login,senha] )
 			.then( ( resposta ) =>
 			{
 				console.log( resposta.command );
-				res.render( 'criou', { msg: `Ola ${login}`, sucesso: true } );
+				res.render( 'criou', { msg: `ola ${login}`, sucesso: true } );
 			})
 			.catch( ( erro ) =>
 			{
-				const texto = `Ops! um erro interno não possibilitou a criação da conta`;
-				console.log('TA PEGANDO FOGO BIXO!!!', erro.stack )
+				const texto = `ops! um erro interno não possibilitou a criação da conta`;
+				console.log('ta pegando fogo bixo!!!', erro.stack )
 				res.render( 'criou', { msg: texto, sucesso: false } );
 			});
 
-			sub.end().then( console.log( 'FIM /CRIARCONTA inserção' ) );
+			sub.end().then( console.log( 'fim /criarconta inserção' ) );
 		}
 		else
 		{
@@ -92,7 +92,7 @@ router.post( '/login', (req,res,next)=>
 		{
 			res.sendStatus = 202;
 			console.log( 'POST ' + login + ' LOGADO !' );
-			res.redirect( `/sessao/usuario/${login}/` );
+			res.redirect( `/sessao/${login}/` );
 		}
 	});
 
@@ -100,20 +100,65 @@ router.post( '/login', (req,res,next)=>
 });
 
 // --- aplicação ---
+/* req.params.usuario -> :usuario */
 
-router.get('/sessao/usuario/*/', (req,res,next)=>
+router.get('/sessao/:usuario/', (req,res,next)=>
 {
-	res.render('sessao', { login: req.query });
+	res.render('sessao', { usuario: req.params.usuario });
 });
 
-router.get( '/sessao/usuario/*/adicionarforasteiro', (req,res,next)=>
+router.get( '/sessao/:usuario/adicionarforasteiro', (req,res,next)=>
 {
-	res.render('adicionarforasteiro',{ ids: [ 1, 2, 3, 4, 5 ] });
+	res.render('adicionarforasteiro', { usuario: req.params.usuario });
 });
 
-router.post( '/sessao/*/visualizarforasteiro', (req,res,next)=>
+router.post( '/sessao/:usuario/adicionarforasteiro', (req,res,next)=>
 {
-	res.send('<h1> Em progresso ... </h1>');
+
+	const { nome } = req.body;
+	const { descricao } = req.body;
+
+	const add = new Pool( dbcredenciais );
+
+	add.query( 'CALL adicionar_forasteiro( $1, $2, consulta_id_usuario( $3 ) )', [ nome, descricao, req.params.usuario ] )
+	.then( ( resposta ) =>
+	{
+		console.log( resposta.command );
+		const texto = `forasteiro ${req.body.nome ?? 'undefined'} foi adicionado`;
+		res.render( 'mensagem', { usuario: req.params.usuario, mensagem: texto, titulo: 'SALVO' } );
+	})
+	.catch( ( erro ) =>
+	{
+		const texto = `ops! um erro interno não possibilitou a adição de um forasteiro`;
+		console.log('ta pegando fogo bixo!!!', erro.stack );
+		res.render( 'mensagem', { usuario: req.params.usuario, mensagem: texto, titulo: 'ERRO' } );
+	});
+
+	add.end().then( console.log( 'fim /adicionarforasteiro inserção' ) );
 });
+
+router.get( '/sessao/:usuario/criarcarteira', (req,res,next)=>
+{
+	res.render( 'criarcarteira', { usuario: req.params.usuario } );
+});
+
+router.post( '/sessao/:usuario/criarcarteira', (req,res,next)=>
+{
+	res.render( 'mensagem', { usuario: req.params.usuario, titulo: 'em progresso', texto: 'em progresso' } );
+});
+
+router.get( '/sessao/:usuario/visualizarcarteira', (req,res,next)=>
+{
+	res.render( 'visualizarcarteira', { usuario: req.params.usuario } );
+});
+
+router.get( '/sessao/:usuario/visualizarforasteiros', (req,res,next)=>
+{
+	res.render( 'visualizarforasteiro', { usuario: req.params.usuario } );
+});
+
+
+
+router.get( '/sessao/:usuario/sair', ()=>{} );
 
 module.exports = router;

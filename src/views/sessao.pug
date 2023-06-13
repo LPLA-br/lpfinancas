@@ -4,27 +4,40 @@ html( lang='pt-br' )
 	body
 		header
 			h1 LPFINANCAS
-			p SEJA MUITO BEM VINDO #{ login }
+			p SEJA MUITO BEM VINDO #{usuario}
 		main
 			div
-				h2 CARTEIRAS
-				ul
-					li
-						a( href="/sessao/usuario/criarcarteira" ) criar carteira
-					li
-						a( href="/sessao/usuario/editarcarteira" ) editar carteira
-					li
-						a( href="/sessao/usuario/visualizarcarteiras" ) visualizar carteiras
-
 				h2 FORASTEIROS
 
 				ul
 					li
-						a( href="/sessao/usuario/adicionarforasteiro" ) adicionar forasteiro
+						a( href=`/sessao/${usuario}/adicionarforasteiro` ) adicionar forasteiro
 					li
-						a( href="/sessao/usuario/editarforasteiro" ) adicionar forasteiro
+						a( href=`/sessao/${usuario}/editarforasteiro` ) editar forasteiro
 					li
-						a( href="/sessao/usuario/visualizarforasteiros" ) visualizar forasteiros
+						a( href=`/sessao/${usuario}/visualizarforasteiros` ) visualizar forasteiros
+					li
+						a( href=`/sessao/${usuario}/deletarforasteiro` ) deletar forasteiro
+
+				h2 CARTEIRAS
+				ul
+					li
+						a( href=`/sessao/${usuario}/criarcarteira` ) criar carteira
+					li
+						a( href=`/sessao/${usuario}/editarcarteira` ) editar carteira
+					li
+						a( href=`/sessao/${usuario}/visualizarcarteira` ) visualizar carteira
+					li
+						a( href=`/sessao/${usuario}/deletarcarteira` ) deletar carteira
+
+				h2 ENTRADAS e SAIDAS
+
+				ul
+					li
+						a( href=`/sessao/${usuario}/entradas` ) adicionar ou remover entradas
+					li
+						a( href=`/sessao/${usuario}/saidas` ) adicionar ou remover saidas
+
 
 		footer
 			a( href='/' ) encerrar sessao

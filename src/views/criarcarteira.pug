@@ -1,0 +1,25 @@
+doctype html
+html( lang='pt-br' )
+	include head.pug
+	body
+		header
+			h1 LPFINANCAS
+			p CRIAR CARTEIRA PARA DE #{ usuario }
+			p.
+				A carteira é uma entidade abastrata que representa
+				um lugar físico ou digital onde armazenas valores
+				monetários.
+		main
+			form( action=`http://127.0.0.1:8080/sessao/${usuario}/criarcarteira` method="post" )
+				label( for="idmoney" ) unidade monetária
+				input( id="idmoney" type="text" name="unidademonetaria" maxlength="3" required )
+
+				label( for="iddescr" ) motante inicial
+				input( id="iddescr" type="text" name="motanteinicial" value="0" )
+
+				input( type="submit" value="CRIAR" )
+
+		footer
+			a( href=`/sessao/${ usuario }` ) voltar para painel
+			a( href="/" ) encerrar sessao
+			small lpfinancas 2023

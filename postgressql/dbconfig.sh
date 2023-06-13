@@ -2,12 +2,18 @@
 
 USUARIO='lpfinancas';
 BANCODADOS='lpf';
-TABELAS='./lpfinancas.sql';
 PROPRIETARIO='postgres';
 HOSTNAMEDB='pgdb';
 DEVSENHA='mo69om';
 PORTA="5432";
 DADOSCOTEINERIS='/var/lib/postgresql/data/pgdata';
+
+TABELAS='./tabelas.sql';
+PROCEDIMENTOS='./procedimentos.sql';
+GATILHOS='./gatilhos.sql';
+FUNCOES='./funcoes.sql';
+VIEWS='./views.sql';
+
 
 if [[ $1 == "-l" ]]; then
 
@@ -34,6 +40,10 @@ elif [[ $1 == "--popular" ]]; then
 	HOST=$(docker container inspect pgdb | grep IPAddress | sed '1,2d' | cut -d ':' -f 2 | tr -d '"' | tr -d ' ' | tr -d ',');
 	createdb --host=$HOST --port=$PORTA -U $PROPRIETARIO --owner=$PROPRIETARIO $BANCODADOS;
 	psql --host=$HOST --port=$PORTA -U $PROPRIETARIO -d $BANCODADOS < $TABELAS;
+	psql --host=$HOST --port=$PORTA -U $PROPRIETARIO -d $BANCODADOS < $PROCEDIMENTOS;
+	psql --host=$HOST --port=$PORTA -U $PROPRIETARIO -d $BANCODADOS < $GATILHOS; 
+	psql --host=$HOST --port=$PORTA -U $PROPRIETARIO -d $BANCODADOS < $FUNCOES;
+	psql --host=$HOST --port=$PORTA -U $PROPRIETARIO -d $BANCODADOS < $VIEWS;
 
 fi
 

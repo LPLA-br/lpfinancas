@@ -4,22 +4,23 @@ html( lang='pt-br' )
 	body
 		header
 			h1 LPFINANCAS
-			p ADIÇÃO DE FORASTEIRO
+			p ADIÇÃO DE FORASTEIRO PARA CONTA DE #{ usuario }
+			p.
+				O forasteiro é uma entidade abstrata que
+				representa uma pessoa física, uma pessoa
+				jurídica ou instituição do estado.
+				Recebes dela ou pagas à esta entidade.
 		main
-			form( action="http://127.0.0.1:8080/login" method="post" )
-				label( for="idnome" ) login
+			form( action=`http://127.0.0.1:8080/sessao/${usuario}/adicionarforasteiro` method="post" )
+				label( for="idnome" ) nome
 				input( id="idnome" type="text" name="nome" maxlength="50" required )
 
 				label( for="iddescr" ) descrição
 				input( id="iddescr" type="text" name="descricao" )
 
-				label( for="idregistrador" )
-				select
-					#{ ids.map( id => `option ( value="${id}" ) ${id}` ) }
-
-				input( type="submit" value="LOGAR" )
+				input( type="submit" value="SALVAR" )
 
 		footer
-			a( href="/sessao" ) voltar para painel
+			a( href=`/sessao/${ usuario }` ) voltar para painel
 			a( href="/" ) encerrar sessao
 			small lpfinancas 2023
