@@ -10,18 +10,20 @@ html( lang='pt-br' )
 				um lugar físico ou digital onde armazenas valores
 				monetários.
 		main
-			form( action=`http://127.0.0.1:8080/sessao/${usuario}/visualizarcarteira` method="post" )
-				label( for="carteiras" ) lista de carteiras
-				select( name="carteiras" )
-					if dados.length > 0
-						each val in dados
-							option( value=val.id )= val.id + ' ' + val.unidade_monetaria
-					else
-						option( disable ) sem carteiras
-
-				input( type="submit" value="VISUALIZAR" )
+			table
+				thread
+					tr
+						th id numerico
+						th unidade monetaria
+						th motante guardado
+				thbody
+					tr
+						td #{ dados[0].id }
+						td #{ dados[0].unidade_monetaria }
+						td #{ dados[0].motante }
 
 		footer
 			a( href=`/sessao/${ usuario }` ) voltar para painel
 			a( href="/" ) encerrar sessao
 			small lpfinancas 2023
+

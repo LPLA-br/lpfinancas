@@ -38,3 +38,16 @@ AS $$
 	WHERE login = login_inp;
 $$ LANGUAGE SQL;
 
+--carteiras
+
+CREATE OR REPLACE FUNCTION lista_de_carteiras_do_usuario
+(
+	IN id_usuarii INT
+)
+RETURNS TABLE ( id INT, unidade_monetaria CHAR(3), motante FLOAT )
+AS
+$$
+	SELECT id, unidade_monetaria, motante
+	FROM carteiras
+	WHERE proprietario = id_usuarii;
+$$ LANGUAGE SQL;
