@@ -6,7 +6,7 @@
 #
 ###############################
 
-version: "2.18.1"
+version: ""
 services:
   pgdb:
     image: postgres:latest
@@ -32,10 +32,10 @@ services:
 
 networks:
   lpfinancas:
-    driver:
-      bridge
+    name: lpfinancas
+    external: true
 
 volumes:
   lpfdata:
-    external: true
     name: lpfdata
+    external: true
