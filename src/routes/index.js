@@ -137,6 +137,21 @@ router.post( '/sessao/:usuario/adicionarforasteiro', (req,res,next)=>
 	bd.end().then( console.log( 'fim /adicionarforasteiro inserção' ) );
 });
 
+router.get( '/sessao/:usuario/editarforasteiro', (req,res,next)=>
+{
+	res.render( 'sessao', { usuario: req.params.usuario });
+});
+
+router.get( '/sessao/:usuario/visualizarforasteiros', (req,res,next)=>
+{
+	res.render( 'sessao', { usuario: req.params.usuario });
+});
+
+router.get( '/sessao/:usuario/deletarforasteiro', (req,res,next)=>
+{
+	res.render( 'sessao', { usuario: req.params.usuario });
+});
+
 router.get( '/sessao/:usuario/criarcarteira', (req,res,next)=>
 {
 	res.render( 'criarcarteira', { usuario: req.params.usuario } );
@@ -163,6 +178,11 @@ router.post( '/sessao/:usuario/criarcarteira', (req,res,next)=>
 	});
 
 	bd.end().then( console.log( 'fim /criarcarteira inserção' ) );
+});
+
+router.get( '/sessao/:usuario/editarcarteira', (req,res,next)=>
+{
+	res.render( 'sessao', { usuario: req.params.usuario });
 });
 
 router.get( '/sessao/:usuario/visualizarcarteira', (req,res,next)=>
@@ -215,9 +235,19 @@ router.post( '/sessao/:usuario/visualizarcarteira', (req,res,next)=>
 	bd.end().then( console.log( 'fim /visualizarcarteiradados' ) );
 });
 
-router.get( '/sessao/:usuario/visualizarforasteiros', (req,res,next)=>
+router.get( '/sessao/:usuario/deletarcarteira', (req,res,next)=>
 {
-	res.render( 'visualizarforasteiro', { usuario: req.params.usuario } );
+	res.render( 'sessao', { usuario: req.params.usuario });
+});
+
+router.get( '/sessao/:usuario/entradas', (req,res,next)=>
+{
+	res.render( 'sessao', { usuario: req.params.usuario });
+});
+
+router.get( '/sessao/:usuario/saidas', (req,res,next)=>
+{
+	res.render( 'sessao', { usuario: req.params.usuario });
 });
 
 router.get( '/sessao/:usuario/sair', ()=>{} );
