@@ -1,3 +1,5 @@
-./src/postgressql
 ./node_modules
 ./Dockerfile
+./ymls
+./test
+./README.md

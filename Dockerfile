@@ -2,9 +2,7 @@
 FROM node:19
 WORKDIR /usr/src/lpfinancas
 
-COPY ./src .
-COPY ./package.json .
-COPY ./package-lock.json .
+COPY . .
 
 RUN npm install
 
