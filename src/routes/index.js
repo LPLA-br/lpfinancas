@@ -4,8 +4,7 @@ const router = express.Router();
 const path = require('path');
 const { Pool } = require('pg');
 
-//const { dbcredenciais } = require( '../config/credenciais' );
-const { dbcredenciais } = require( '../config/credenciais_localdev' );
+const { dbcredenciais } = require( '../config/credenciais' );
 
 router.get('/', (req, res, next)=>
 {

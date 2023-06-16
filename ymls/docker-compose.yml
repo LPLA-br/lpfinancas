@@ -6,7 +6,7 @@
 #
 ###############################
 
-version: ""
+version: "1.0"
 services:
   pgdb:
     image: postgres:latest
@@ -29,6 +29,9 @@ services:
       - 8080:8080
     depends_on:
       - pgdb
+
+# Redes e volumes devem ser criados manualmente
+# No primeira implementação no servidor.
 
 networks:
   lpfinancas:
