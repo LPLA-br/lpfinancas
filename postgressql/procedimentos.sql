@@ -146,11 +146,11 @@ $$ LANGUAGE PLPGSQL;
 
 CREATE OR REPLACE PROCEDURE adicionar_entrada
 (
-	descr_inp TEXT,
-	quantia_inp FLOAT,
-	pagador_inp INT,
-	recebedor_inp INT,
-	cart_alvo_inp INT
+	IN descr_inp TEXT,
+	IN quantia_inp FLOAT,
+	IN pagador_inp INT,
+	IN recebedor_inp INT,
+	IN cart_alvo_inp INT
 )
 LANGUAGE SQL
 AS $$
@@ -160,11 +160,11 @@ $$;
 
 CREATE OR REPLACE PROCEDURE adicionar_saida
 (
-	descr_inp TEXT,
-	quantia_inp FLOAT,
-	pagador_inp INT,
-	recebedor_inp INT,
-	cart_alvo_inp INT
+	IN descr_inp TEXT,
+	IN quantia_inp FLOAT,
+	IN pagador_inp INT,
+	IN recebedor_inp INT,
+	IN cart_alvo_inp INT
 )
 LANGUAGE SQL
 AS $$
