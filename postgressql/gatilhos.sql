@@ -5,34 +5,32 @@
 	automaticamente inseridas pelo banco de dados.
 */
 
-CREATE OR REPLACE FUNCTION data_atual( IN  INT )
-RETURNS TRIGGER AS $data_atual$
+CREATE OR REPLACE FUNCTION data_atual_entrada()
+RETURNS TRIGGER AS $data_atual_entrada$
 BEGIN
-	IF alvo = 1 THEN
-		UPDATE entradas
-		SET NEW.data_hora = NOW()
-		WHERE id = NEW.id;
-	ELSE
-		UPDATE saidas
-		SET NEW.data_hora = NOW()
-		WHERE id = NEW.id;
-	END IF;
-
+	UPDATE entradas
+	SET NEW.data_hora = NOW()
+	WHERE id = NEW.id;
 END
-$data_atual$ LANGUAGE PLPGSQL;
+$data_atual_entrada$ LANGUAGE PLPGSQL;
+
+CREATE OR REPLACE FUNCTION data_atual_saida()
+RETURNS TRIGGER AS $data_atual_saida$
+BEGIN
+	UPDATE saidas
+	SET NEW.data_hora = NOW()
+	WHERE id = NEW.id;
+END
+$data_atual_saida$ LANGUAGE PLPGSQL;
 
 CREATE OR REPLACE TRIGGER atualizar_data_entradas
 BEFORE
 INSERT
 ON entradas
-EXECUTE FUNCTION atualizar_data_entradas(1);
+EXECUTE FUNCTION data_atual_entrada();
 
 CREATE OR REPLACE TRIGGER atualizar_data_saidas
 BEFORE
 INSERT
 ON saidas
-EXECUTE FUNCTION atualizar_valor_carteira(0);
-
-DROP TRIGGER IF EXISTS atualizar_entrada;
-DROP FUNCTION IF EXISTS atualizar_valor_carteira;
-
+EXECUTE FUNCTION data_atual_saida();
