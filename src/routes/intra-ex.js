@@ -1,6 +1,5 @@
 const express = require('express');
 const router = express.Router();
-const { Pool } = require('pg');
 
 router.get( '/sessao/:usuario/entradas', (req,res,next)=>
 {

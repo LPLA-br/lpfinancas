@@ -23,7 +23,8 @@ Usuario.init(
 		login:
 			{
 				type: DataTypes.STRING,
-				allowNull: false
+				allowNull: false,
+				unique: true
 			},
 		senha:
 			{
@@ -103,8 +104,14 @@ Forasteiro.init(
 
 //tabelas muitos para muitos.
 
-const Entrada = seq.define( 'Entrada',
+const Movimento = seq.define( 'Movimento',
 {
+	id:
+		{
+			type: DataTypes.INTEGER,
+			autoIncrement: true,
+			primaryKey: true
+		},
 	quantia:
 		{
 			type: DataTypes.FLOAT,
@@ -119,36 +126,18 @@ const Entrada = seq.define( 'Entrada',
 		{
 			type: DataTypes.DATE,
 			allowNull: false
-		}
-},
-{
-	sequelize: seq,
-	timestamps: false,
-	tableName: 'entradas'
-});
-
-const Saida = seq.define( 'Saida',
-{
-	quantia:
-		{
-			type: DataTypes.FLOAT,
-			allowNull: false
 		},
-	descr:
+	tipo:
 		{
 			type: DataTypes.TEXT,
-			defaultValue: 'sem Descrição'
-		},
-	data:
-		{
-			type: DataTypes.DATE,
+			defaultValue: 'pagamento',
 			allowNull: false
 		}
 },
 {
 	sequelize: seq,
 	timestamps: false,
-	tableName: 'saidas'
+	tableName: 'movimentacoes'
 });
 
 //um para um OU muitos para um , um para muitos
@@ -161,25 +150,25 @@ Forasteiro.belongsTo( Usuario );
 
 //muitos para muitos
 
-Carteira.belongsToMany( Forasteiro, { through: 'Entrada' } );
-Forasteiro.belongsToMany( Carteira, { through: 'Entrada' } );
-
-Carteira.belongsToMany( Forasteiro, { through: 'Saida' } );
-Forasteiro.belongsToMany( Carteira, { through: 'Saida' } );
-
+Carteira.belongsToMany( Forasteiro, { through: 'Movimento' } );
+Forasteiro.belongsToMany( Carteira, { through: 'Movimento' } );
 
 ( async ()=>
 {
-	try
+	//setar para true
+	if ( false )
 	{
-		await seq.authenticate();
-		await seq.sync();
-		await seq.close();
-	}
-	catch( erro )
-	{	
-		console.log('FALHOU', erro);
+		try
+		{
+			await seq.authenticate();
+			await seq.sync( { force: true } );
+			await seq.close();
+		}
+		catch( erro )
+		{
+			console.log('FALHOU', erro);
+		}
 	}
 })();
 
-module.exports = { seq };
+module.exports = { seq, Usuario, Forasteiro, Carteira, Movimento };
