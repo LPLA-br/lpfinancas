@@ -3,13 +3,13 @@
  ***************************************/
 
 const { Sequelize, DataTypes, Model } = require('sequelize');
-const pg = require( 'pg' );
+const mariadb = require('mariadb');
 
-const seq = new Sequelize( 'postgres://postgres:mo69om@172.18.0.2:5432/testes', { dialect: 'postgres' } );
+const seq = new Sequelize( 'lpfinancas', 'root', 'mo69om', { host: '172.17.0.2', dialect: 'mariadb' } );
 
 class Usuario extends Model { }
 class Carteira extends Model { }
-class Forasteiro extends Model {  }
+class Forasteiro extends Model { }
 
 Usuario.init(
 	{
@@ -29,6 +29,11 @@ Usuario.init(
 			{
 				type: DataTypes.STRING,
 				allowNull: false
+			},
+		idhexadecimal:
+			{
+				type: DataTypes.STRING,
+				allowNull: true
 			}
 	},
 	{
@@ -67,6 +72,7 @@ Carteira.init(
 	}
 );
 
+
 Forasteiro.init(
 	{
 		id:
@@ -95,16 +101,79 @@ Forasteiro.init(
 
 );
 
+//tabelas muitos para muitos.
+
+const Entrada = seq.define( 'Entrada',
+{
+	quantia:
+		{
+			type: DataTypes.FLOAT,
+			allowNull: false
+		},
+	descr:
+		{
+			type: DataTypes.TEXT,
+			defaultValue: 'sem Descrição'
+		},
+	data:
+		{
+			type: DataTypes.DATE,
+			allowNull: false
+		}
+},
+{
+	sequelize: seq,
+	timestamps: false,
+	tableName: 'entradas'
+});
+
+const Saida = seq.define( 'Saida',
+{
+	quantia:
+		{
+			type: DataTypes.FLOAT,
+			allowNull: false
+		},
+	descr:
+		{
+			type: DataTypes.TEXT,
+			defaultValue: 'sem Descrição'
+		},
+	data:
+		{
+			type: DataTypes.DATE,
+			allowNull: false
+		}
+},
+{
+	sequelize: seq,
+	timestamps: false,
+	tableName: 'saidas'
+});
+
+//um para um OU muitos para um , um para muitos
+
+Usuario.hasMany( Carteira );
+Carteira.belongsTo( Usuario );
+
+Usuario.hasMany( Forasteiro );
+Forasteiro.belongsTo( Usuario );
+
+//muitos para muitos
+
+Carteira.belongsToMany( Forasteiro, { through: 'Entrada' } );
+Forasteiro.belongsToMany( Carteira, { through: 'Entrada' } );
+
+Carteira.belongsToMany( Forasteiro, { through: 'Saida' } );
+Forasteiro.belongsToMany( Carteira, { through: 'Saida' } );
+
+
 ( async ()=>
 {
 	try
 	{
 		await seq.authenticate();
 		await seq.sync();
-
-		const luizito = Usuario.build( { login: 'luizito', senha: '123' } );
-		await luizito.save();
-
 		await seq.close();
 	}
 	catch( erro )
@@ -112,3 +181,5 @@ Forasteiro.init(
 		console.log('FALHOU', erro);
 	}
 })();
+
+module.exports = { seq };
