@@ -1,23 +1,36 @@
 /*################# GATILHOS ##################*/
 
- /*updates ou inserts de entrada e de saida
-  corrigem o valor de uma
-  respectiva carteira*/
+/*
+	As datas das entradas e saidas são
+	automaticamente inseridas pelo banco de dados.
+*/
 
-CREATE OR REPLACE FUNCTION atualizar_valor_carteira()
-RETURNS TRIGGER AS $atualizar_valor_carteira$
+CREATE OR REPLACE FUNCTION data_atual_entrada()
+RETURNS TRIGGER AS $data_atual_entrada$
 BEGIN
-	UPDATE carteiras
-	SET motante = motante + NEW.quantia
-	WHERE id = NEW.carteira_alvo;
+	UPDATE entradas
+	SET NEW.data_hora = NOW()
+	WHERE id = NEW.id;
 END
-$atualizar_valor_carteira$ LANGUAGE PLPGSQL;
+$data_atual_entrada$ LANGUAGE PLPGSQL;
 
-CREATE OR REPLACE TRIGGER atualizar_entrada
-BEFORE INSERT OR UPDATE ON entradas
-EXECUTE FUNCTION atualizar_valor_carteira();
+CREATE OR REPLACE FUNCTION data_atual_saida()
+RETURNS TRIGGER AS $data_atual_saida$
+BEGIN
+	UPDATE saidas
+	SET NEW.data_hora = NOW()
+	WHERE id = NEW.id;
+END
+$data_atual_saida$ LANGUAGE PLPGSQL;
 
+CREATE OR REPLACE TRIGGER atualizar_data_entradas
+BEFORE
+INSERT
+ON entradas
+EXECUTE FUNCTION data_atual_entrada();
 
-/*################# VIEWS ##################*/
-
-
+CREATE OR REPLACE TRIGGER atualizar_data_saidas
+BEFORE
+INSERT
+ON saidas
+EXECUTE FUNCTION data_atual_saida();
