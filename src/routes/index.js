@@ -45,7 +45,6 @@ router.post( '/criarconta', (req,res,next)=>
 {
 	const login = req.body.login ?? undefined;
 	const senha = req.body.senha ?? undefined;
-	let perm = true;
 
 	if ( login == undefined && senha == undefined )
 	{
@@ -56,6 +55,8 @@ router.post( '/criarconta', (req,res,next)=>
 	{
 		try
 		{
+			let perm = true;
+
 			await seq.authenticate();
 
 			const results = await Usuario.findOne( { where: { login: login, senha: senha } } );
@@ -71,6 +72,17 @@ router.post( '/criarconta', (req,res,next)=>
 			}
 
 			await seq.close();
+
+			if ( perm == true )
+			{
+				let m = `Usuario ${ login ?? "Erro" } foi criado com sucesso`;
+				res.render( 'criou', { msg: m, sucesso: true } );
+			}
+			else
+			{
+				let m = `Erro: O login informado não esta disponível para uso. Tente novamente`;
+				res.render( 'criou', { msg: m, sucesso: false } );
+			}
 		}
 		catch ( erro )
 		{
@@ -78,10 +90,6 @@ router.post( '/criarconta', (req,res,next)=>
 		}
 	})();
 
-	if ( perm == true )
-		res.render( 'criou', { msg: "criado", sucesso: true } );
-	else
-		res.render( 'criou', { msg: "Erro Existe um usuario com o login passado.", sucesso: false } );
 });
 
 router.post( '/login', (req,res,next)=>
@@ -102,13 +110,16 @@ router.post( '/login', (req,res,next)=>
 
 			const results = await Usuario.findOne( { where: { login: login, senha: senha } } );
 			
+			await seq.close();
+
 			if ( results.login == login && results.senha == senha )
 			{
-				//criar id hexadecimal no banco de dados
+				//criar id hexadecimal no banco de dados mongo
 				( async ()=>
 				{
 					await mongoose.connect( uri );
 
+					// middleware
 					let h = '';
 					for( let a = 0; a < 16; a++ )
 					{
@@ -116,7 +127,8 @@ router.post( '/login', (req,res,next)=>
 					}
 
 					/* verificar se id existe antes
-					 * de inserir um novo id no ato de login*/
+					 * de inserir um novo id no ato
+					 * de repetição de login*/
 
 					const mresults = await Token.findOne( { login: login } );
 
@@ -130,29 +142,53 @@ router.post( '/login', (req,res,next)=>
 
 				}
 				)();
+
+				res.redirect( `/sessao/${login}/${hexid}/` );
+			}
+			else
+			{
+				let m = "login ou senha incorreto(s) !";
+				res.render( 'mensagem', { titulo: "ERRO", mensagem: m, logado: false } );
 			}
 
-			await seq.close();
 		}
 		catch ( erro )
 		{
 			console.log( "erro" );
 		}
 	})();
-	res.send( 'ok' );
+
 });
 
-// APLICAÇÃO ----
-/* req.params.usuario -> :usuario */
+// APLICAÇÃO POST LOGIN ----
 
-router.get('/sessao/:usuario/', (req,res,next)=>
+router.get('/sessao/:usuario/:hexid/', (req,res,next)=>
 {
-	res.render( 'sessao', { usuario: req.params.usuario } );
+	res.render( 'sessao', { usuario: req.params.usuario, hexid: req.params.hexid } );
 });
 
-router.get( '/sessao/:usuario/sair', (req,res,next)=>
+router.get( '/sessao/:usuario/:hexid/sair', (req,res,next)=>
 {
 	//deletar id hexadecimal no banco de dados
+	( async ()=>
+	{
+		await mongoose.connect( uri );
+
+		const mresults = await Token.findOne( { login: login } );
+
+		if ( mresults.$isEmpty() )
+		{
+
+		}
+		else
+		{
+			await Token.deleteOne( { login: login } );
+		}
+
+		await mongoose.disconnect();
+
+	}
+	)();
 
 
 	res.redirect( '/' );

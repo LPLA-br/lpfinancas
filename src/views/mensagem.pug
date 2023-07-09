@@ -8,6 +8,10 @@ html( lang='pt-br' )
 			p( class="mensagem" ).
 				#{ mensagem }
 		footer
-			a( href=`/sessao/${usuario}` ) voltar para painel
-			a( href="/" ) encerrar sessao
+			if logado
+				a( href=`/sessao/${usuario}/${hexid}/` ) voltar para painel
+				a( href="/sessao/${usuario}/${hexid}/sair" ) encerrar sessao
+			else
+				a( href='/login' ) login
+				a( href='/' ) página inicial
 			small lpfinancas 2023

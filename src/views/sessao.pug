@@ -11,34 +11,34 @@ html( lang='pt-br' )
 
 				ul
 					li
-						a( href=`/sessao/${usuario}/adicionarforasteiro` ) adicionar forasteiro
+						a( href=`/sessao/${usuario}/${hexid}/adicionarforasteiro` ) adicionar forasteiro
 					li
-						a( href=`/sessao/${usuario}/editarforasteiro` ) editar forasteiro
+						a( href=`/sessao/${usuario}/${hexid}/editarforasteiro` ) editar forasteiro
 					li
-						a( href=`/sessao/${usuario}/visualizarforasteiros` ) visualizar forasteiros
+						a( href=`/sessao/${usuario}/${hexid}/visualizarforasteiros` ) visualizar forasteiros
 					li
-						a( href=`/sessao/${usuario}/deletarforasteiro` ) deletar forasteiro
+						a( href=`/sessao/${usuario}/${hexid}/deletarforasteiro` ) deletar forasteiro
 
 				h2 CARTEIRAS
 				ul
 					li
-						a( href=`/sessao/${usuario}/criarcarteira` ) criar carteira
+						a( href=`/sessao/${usuario}/${hexid}/criarcarteira` ) criar carteira
 					li
-						a( href=`/sessao/${usuario}/editarcarteira` ) editar carteira
+						a( href=`/sessao/${usuario}/${hexid}/editarcarteira` ) editar carteira
 					li
-						a( href=`/sessao/${usuario}/visualizarcarteira` ) visualizar carteira
+						a( href=`/sessao/${usuario}/${hexid}/visualizarcarteira` ) visualizar carteira
 					li
-						a( href=`/sessao/${usuario}/deletarcarteira` ) deletar carteira
+						a( href=`/sessao/${usuario}/${hexid}/deletarcarteira` ) deletar carteira
 
 				h2 ENTRADAS e SAIDAS
 
 				ul
 					li
-						a( href=`/sessao/${usuario}/entradas` ) adicionar ou remover entradas
+						a( href=`/sessao/${usuario}/${hexid}/entradas` ) adicionar ou remover entradas
 					li
-						a( href=`/sessao/${usuario}/saidas` ) adicionar ou remover saidas
+						a( href=`/sessao/${usuario}/${hexid}/saidas` ) adicionar ou remover saidas
 
 
 		footer
-			a( href='/sessao/${usuario}/sair' ) encerrar sessao
+			a( href='/sessao/${usuario}/${hexid}/sair' ) encerrar sessao
 			small lpfinancas 2023
