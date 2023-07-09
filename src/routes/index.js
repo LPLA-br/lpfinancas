@@ -6,6 +6,7 @@ const { seq } = require( '../models/modelos' );
 const { Usuario } = require( '../models/modelos' );
 
 const { Token, uri } = require( '../models/sessao' );
+const { MongoClient, ServerApiVersion } = require( 'mongodb' ); //gambiarra
 
 const intraex = require('./intra-ex');
 const carteiras = require('./carteiras');
@@ -22,6 +23,42 @@ async function hexGen()
 	const max = 15;
 
 	return nums[ Math.floor( Math.random() * ( max - min + 1 ) + min ) ];
+}
+
+async function salvarHexidParaLogin( login )
+{
+	try
+	{
+		let h = '';
+
+		for( let a = 0; a < 16; a++ )
+		{
+			h = h + await hexGen();
+		}
+
+		await mongoose.connect( uri );
+
+
+		/* verificar se id existe antes
+		 * de inserir um novo id no ato
+		 * de repetição de login*/
+
+		const mresults = await Token.findOne( { login: login } );
+
+		if ( mresults?.login == undefined )
+		{
+			const instancia = new Token( { login: login, hexid: h } );
+			await instancia.save();
+		}
+
+		await mongoose.disconnect();
+		return h;
+	}
+	catch ( erro )
+	{
+		console.log( erro );
+		return undefined;
+	}
 }
 
 router.get('/', (req, res, next)=>
@@ -55,25 +92,22 @@ router.post( '/criarconta', (req,res,next)=>
 	{
 		try
 		{
-			let perm = true;
+			let cria = false;
 
 			await seq.authenticate();
 
-			const results = await Usuario.findOne( { where: { login: login, senha: senha } } );
+			const usuario = await Usuario.findOne( { where: { login: login } } );
 			
-			if ( results.login == login )
+			if ( usuario == null )
 			{
-				perm = false;
-			}
-			else
-			{
+				cria = true;
 				const novo = Usuario.build( { login: login, senha: senha } );
 				await novo.save();
 			}
 
-			await seq.close();
+			//await seq.close();
 
-			if ( perm == true )
+			if ( cria == true )
 			{
 				let m = `Usuario ${ login ?? "Erro" } foi criado com sucesso`;
 				res.render( 'criou', { msg: m, sucesso: true } );
@@ -110,38 +144,14 @@ router.post( '/login', (req,res,next)=>
 
 			const results = await Usuario.findOne( { where: { login: login, senha: senha } } );
 			
-			await seq.close();
+			//await seq.close();
 
-			if ( results.login == login && results.senha == senha )
+			if ( results?.login == login && results?.senha == senha )
 			{
 				//criar id hexadecimal no banco de dados mongo
-				( async ()=>
-				{
-					await mongoose.connect( uri );
+				const hexid = await salvarHexidParaLogin( login );
 
-					// middleware
-					let h = '';
-					for( let a = 0; a < 16; a++ )
-					{
-						h = h + await hexGen();
-					}
-
-					/* verificar se id existe antes
-					 * de inserir um novo id no ato
-					 * de repetição de login*/
-
-					const mresults = await Token.findOne( { login: login } );
-
-					if ( mresults.$isEmpty() )
-					{
-						const instancia = new Token( { login: login, hexid: h } );
-						await instancia.save();
-					}
-
-					await mongoose.disconnect();
-
-				}
-				)();
+				if ( hexid == undefined ) res.send( 'erro salvarHexidParaLogin(login:String)' );
 
 				res.redirect( `/sessao/${login}/${hexid}/` );
 			}
@@ -154,7 +164,7 @@ router.post( '/login', (req,res,next)=>
 		}
 		catch ( erro )
 		{
-			console.log( "erro" );
+			console.log( erro );
 		}
 	})();
 
@@ -169,28 +179,28 @@ router.get('/sessao/:usuario/:hexid/', (req,res,next)=>
 
 router.get( '/sessao/:usuario/:hexid/sair', (req,res,next)=>
 {
+	const client = new MongoClient( uri, { ServerApi: { version: ServerApiVersion.v1, strict: true, deprecationErrors: true } } );
+
 	//deletar id hexadecimal no banco de dados
 	( async ()=>
 	{
-		await mongoose.connect( uri );
-
-		const mresults = await Token.findOne( { login: login } );
-
-		if ( mresults.$isEmpty() )
+		try
 		{
+			const db = client.db("tokens");
+			const tokens = db.collection("tokens");
+
+			await tokens.deleteOne( { login: req.params.usuario } );
 
 		}
-		else
+		catch ( erro )
 		{
-			await Token.deleteOne( { login: login } );
+			console.log( erro );
 		}
-
-		await mongoose.disconnect();
-
-	}
-	)();
-
-
+		finally
+		{
+			await client.close();
+		}
+	})();
 	res.redirect( '/' );
 });
 
