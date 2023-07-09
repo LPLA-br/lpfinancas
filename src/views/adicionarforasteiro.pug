@@ -11,7 +11,7 @@ html( lang='pt-br' )
 				jurídica ou instituição do estado.
 				Recebes dela ou pagas à esta entidade.
 		main
-			form( action=`http://127.0.0.1:8080/sessao/${usuario}/adicionarforasteiro` method="post" )
+			form( action=`http://${servidor}:8080/sessao/${usuario}/${hexid}/adicionarforasteiro` method="post" )
 				label( for="idnome" ) nome
 				input( id="idnome" type="text" name="nome" maxlength="50" required )
 
@@ -21,6 +21,5 @@ html( lang='pt-br' )
 				input( type="submit" value="SALVAR" )
 
 		footer
-			a( href=`/sessao/${ usuario }` ) voltar para painel
-			a( href="/" ) encerrar sessao
+			include voltarencerrar.pug
 			small lpfinancas 2023

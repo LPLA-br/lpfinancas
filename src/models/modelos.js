@@ -5,7 +5,8 @@
 const { Sequelize, DataTypes, Model } = require('sequelize');
 const mariadb = require('mariadb');
 
-const seq = new Sequelize( 'lpfinancas', 'root', 'mo69om', { host: '172.17.0.2', dialect: 'mariadb' } );
+const { databases } = require( '../config/config' );
+const seq = new Sequelize( 'lpfinancas', 'root', 'senha', { host: databases.mariadbip, dialect: 'mariadb' } );
 
 class Usuario extends Model { }
 class Carteira extends Model { }
