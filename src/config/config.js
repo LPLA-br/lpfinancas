@@ -5,7 +5,7 @@ const bodyParser = require('body-parser');
 const app = express();
 const PORTA = 8080;
 
-const databases =
+const dbinfos =
 {
 	mariadbip: '172.17.0.2',
 	mongodbip: '172.17.0.3',
@@ -39,4 +39,4 @@ app.use('/', indexRouter );
 app.set('views', path.join(__dirname, '../views'));
 app.set('view engine', 'pug');
 
-module.exports = { app, PORTA, databases };
+module.exports = { app, PORTA, dbinfos };

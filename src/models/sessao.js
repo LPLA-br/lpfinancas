@@ -5,9 +5,9 @@
 const moongose = require('mongoose');
 const { Schema } = moongose;
 
-const { databases } = require( '../config/config' );
+const { dbinfos } = require( '../config/config' );
 
-const uri = `mongodb://root:mo69om@${databases.mongodbip}:27017/tokens`;
+const uri = `mongodb://root:mo69om@${dbinfos.mongodbip}:27017/tokens`;
 const tokenSchema = new Schema(
 {
 	login: String,
